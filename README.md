@@ -1,17 +1,19 @@
 # AudioTools-for-Linux
-This is a tool I designed in C# for managing audio production tools in Linux environments including setup/install and ease-of-use. This is currently only for Ubuntu and Ubuntu-based distros. 
 
-If you would like to fork this tool and modify it to work in non-Ubuntu based distros I would be happy to refer from this page to your project.
+![image](https://github.com/user-attachments/assets/e83b372d-8708-4ad5-b606-3a6268d0b21d)
+
+This is a GUI tool developed in C# designed to enhance the ease-of-use of command-line interface audio tools in Linux environments. I've included and simplified the setup and installation processes as part of the development of this tool. Currently, this tool is meant for Ubuntu and Ubuntu-based distributions.
+
+If you would like to fork this tool and modify it to work in non-Ubuntu based distros or another language like Python I would be happy to refer to your fork from this project.
 
 ## Requirements
-All requirements are in the <b>setup reqs.sh</b> file. You do not need to install from anything below, this is just a list of requirements:
+All requirements are in the <b>setup reqs.sh</b> file. You do not need to install from any link below, this is just a list of requirements. Installation instructions will follow this section:
 - yabridge: https://github.com/robbert-vdh/yabridge
 - WINE (Pre-9.21 ONLY. 9.21 breaks yabridge): The setup for this installs from apt using WINE 6.0.3. If you use a more modern version of wine you will need to uninstall it (See FAQ)
 - Microsoft Fonts
 - curl
 - dotnet 8.0
-- Pipewire
-- https://www.pipewire.org/
+- Pipewire: https://www.pipewire.org/
 
 ## How To Setup
 This instructional is going to assume you have a fresh install of an Ubuntu-based distro. I can't account for everything going on in your daily driver.
@@ -78,4 +80,4 @@ If you want to downgrade you can read this: https://github.com/robbert-vdh/yabri
 <b><i>Why did you build this GUI when you can do everything from the command line?</i></b><br>
 Because having to stop working on music to type or copy-paste commands into a terminal sucks, and when you're working with other people it really makes audio production on Linux look bad by comparison. I just want to click a button and have it do what I need it to do. This gives me those buttons.<br><br>
 <b><i>Why is this made in C# and not Python</b></i><br>
-I fucking tried to use Python since I know everyone uses it, but I simply couldn't get it to do what I wanted it to do. Every time I would get it working it would break after running pyinstaller. I had multiple people look at it and no one could make it make sense. After a week of slamming my head against my keyboard I abandoned it. I have a background in C# anyway, so that's what I went with. It is easier for me to code and easier for me to expand on later. If you'd like to port this over to Python then be my guest. But if you need the terminal to run it at all then you're defeating the point of the GUI even existing.<br><br>
+I fucking tried to use Python since I know everyone uses it, but I simply couldn't get it to do what I wanted it to do. Every time I would get it working it would break after running pyinstaller! I had multiple people look at it and no one could make it make sense. After a week of slamming my head against my keyboard I abandoned it. I have a background in C# anyway, so that's what I went with, and it worked great. It is easier for me to code and easier for me to expand on later. If you'd like to port this over to Python then be my guest. But, if you need the terminal to run it at all then you're defeating the point of the GUI even existing.<br><br>
