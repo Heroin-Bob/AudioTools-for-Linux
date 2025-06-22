@@ -1,4 +1,4 @@
-# AudioTools-for-Linux
+# AudioTools For Linux
 
 ![image](https://github.com/user-attachments/assets/e83b372d-8708-4ad5-b606-3a6268d0b21d)
 
