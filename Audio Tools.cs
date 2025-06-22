@@ -1,0 +1,195 @@
+using System;
+using System.Diagnostics;
+using Gtk;
+
+public class AudioTools
+{
+    private TextView outputTextView;
+
+    public AudioTools()
+    {
+        Application.Init();
+
+        // Create the main window
+        var window = new Window("Yabridge Control");
+        window.SetDefaultSize(400, 500);
+        
+        window.DeleteEvent += (o, args) => Application.Quit();
+
+        // Create a vertical box to hold the buttons and text view
+        var vbox = new VBox();
+
+        // Create an HBox to hold the two buttons side by side
+        var hbox = new HBox();
+	
+	// Create a label
+        var sammpleRateLabel = new Label("Sample Rate:");
+        hbox.PackStart(sammpleRateLabel, false, false, 5);
+
+        // Create a dropdown (ComboBox)
+        var sampleComboBox = new ComboBoxText();
+        sampleComboBox.AppendText("44100");
+        sampleComboBox.AppendText("48000");
+        hbox.PackStart(sampleComboBox, false, false, 5);
+        
+	vbox.PackStart(hbox, false, true, 5);
+	
+        // Create a button
+        var sampleButton = new Button("Set Sample Rate");
+        sampleButton.Clicked += (sender, e) => {
+            string selectedValue = sampleComboBox.ActiveText;
+            string concatCommand = "pw-metadata -n settings 0 clock.force-quantum " + selectedValue;
+            RunCommand(concatCommand);
+        };
+        hbox.PackStart(sampleButton, false, false, 5);
+	
+	hbox = new HBox();
+	
+	// Create a label
+        var bufferSizeLabel = new Label("Buffer Size:");
+        hbox.PackStart(bufferSizeLabel, false, false, 5);
+
+        // Create a dropdown (ComboBox)
+        var bufferComboBox = new ComboBoxText();
+        bufferComboBox.AppendText("16");
+        bufferComboBox.AppendText("32");
+        bufferComboBox.AppendText("64");
+        bufferComboBox.AppendText("128");
+        bufferComboBox.AppendText("256");
+        bufferComboBox.AppendText("512");
+        bufferComboBox.AppendText("1024");
+        hbox.PackStart(bufferComboBox, false, false, 5);
+        
+	vbox.PackStart(hbox, false, true, 5);
+	
+        // Create a button
+        var bufferButton = new Button("Set Buffer Size");
+        bufferButton.Clicked += (sender, e) => {
+            string selectedValue = bufferComboBox.ActiveText;
+            string concatCommand = "pw-metadata -n settings 0 clock.force-quantum " + selectedValue;
+            RunCommand(concatCommand);
+        };
+        hbox.PackStart(bufferButton, false, false, 5);
+	
+	
+	
+	hbox = new HBox();
+	
+        // Create the buttons with customizable properties
+        var syncButton = CreateButton("yabridgectl sync", 150, 50);
+        syncButton.Clicked += (sender, e) => RunCommand("$HOME/.local/share/yabridge/yabridgectl sync");
+
+        var statusButton = CreateButton("yabridgectl status", 150, 50);
+        statusButton.Clicked += (sender, e) => RunCommand("$HOME/.local/share/yabridge/yabridgectl status");
+	
+	hbox.PackStart(syncButton, true, true, 5);
+        hbox.PackStart(statusButton, true, true, 5);
+	
+	vbox.PackStart(hbox, false, false, 5);
+	
+        // Add the buttons to the horizontal box
+        
+
+        // Create the Clear button
+        var clearButton = CreateButton("Clear", 320, 50);
+        clearButton.Clicked += (sender, e) => ClearOutput();
+
+        // Create the text view for output
+        outputTextView = new TextView
+        {
+            Editable = false,
+            WrapMode = WrapMode.Word
+        };
+
+        // Create a ScrolledWindow and add the TextView to it
+        var scrolledWindow = new ScrolledWindow();
+        scrolledWindow.Add(outputTextView);
+
+        // Add the horizontal box and the scrolled window to the vertical box
+        vbox.PackStart(hbox, false, false, 5);
+        vbox.PackStart(scrolledWindow, true, true, 5);
+	vbox.PackStart(clearButton, false, false, 5);
+	
+        // Set the policy for the scrollbars
+        scrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
+
+        // Add the vertical box to the window
+        window.Add(vbox);
+        window.ShowAll();
+
+        Application.Run();
+    }
+
+    private Button CreateButton(string label, int width, int height)
+    {
+        var button = new Button(label)
+        {
+            WidthRequest = width,
+            HeightRequest = height
+        };
+        return button;
+    }
+
+    private void RunCommand(string command)
+    {
+        // Clear previous output
+        outputTextView.Buffer.Text = "";
+
+        // Set up the process start info
+        var processStartInfo = new ProcessStartInfo
+        {
+            FileName = "/bin/bash",
+            Arguments = $"-c \"{command}\"",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+
+        // Start the process
+        using (var process = new Process { StartInfo = processStartInfo })
+        {
+            process.OutputDataReceived += (sender, args) =>
+            {
+                if (!string.IsNullOrEmpty(args.Data))
+                {
+                    AppendOutput(args.Data);
+                }
+            };
+
+            process.ErrorDataReceived += (sender, args) =>
+            {
+                if (!string.IsNullOrEmpty(args.Data))
+                {
+                    AppendOutput("Error: " + args.Data);
+                }
+            };
+
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            process.WaitForExit();
+        }
+    }
+
+    private void ClearOutput()
+    {
+        // Clear the text view
+        outputTextView.Buffer.Text = "";
+    }
+
+    private void AppendOutput(string text)
+    {
+        // Update the text view in the UI thread
+        Application.Invoke(delegate
+        {
+            outputTextView.Buffer.Text += text + "\n";
+            outputTextView.ScrollToIter(outputTextView.Buffer.EndIter, 0, false, 0, 0);
+        });
+    }
+
+    public static void Main()
+    {
+        new AudioTools();
+    }
+}
