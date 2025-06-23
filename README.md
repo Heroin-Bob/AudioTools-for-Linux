@@ -29,6 +29,26 @@ You can follow the steps below or open the <b>setup reqs.sh</b> file (it is not 
 
 Make sure you are fully updated with the following command: ```sudo apt update && sudo apt upgrade -y```
 
+### Setup for just AudioTools
+
+If you are already using yabridge and already have pipewire then you do not need to go through the full setup. All you need is to install dotnet 8.0 to run AudioTools.
+
+Use the commands below to download dotnet 8.0:
+
+   ```
+   wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+   sudo dpkg -i packages-microsoft-prod.deb
+   rm packages-microsoft-prod.deb
+   sudo apt-get install -y dotnet-sdk-8.0
+   sudo apt-get install -y aspnetcore-runtime-8.0
+   sudo apt-get install -y dotnet-runtime-8.0
+   ```
+Once completed you can download AudioTools from the Releases page.
+
+### Setup for all relevant software
+
+If you do not have anything installed from the requirements list below are the steps to go through to get everything working. Be sure to follow each step exactly as it is written.
+
 1. Dotnet is going to be necessary to run the GUI to perform sample size changes, buffer rate changes, and yabridge syncing (more on this later). Install dotnet 8.0 with the following command:<br>
    ```
    wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
