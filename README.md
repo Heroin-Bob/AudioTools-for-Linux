@@ -20,7 +20,7 @@ This instructional is going to assume you have a fresh install of an Ubuntu-base
 
 You can follow the steps below or open the <b>setup reqs.sh</b> file (it is not advised to run the .sh file as it is, but rather take it section-by-section - but I'm not going to tell you how to live your life):
 
-Make sure you are fully updated with the following command: <code>sudo apt update && sudo apt upgrade -y</code>
+Make sure you are fully updated with the following command: ```sudo apt update && sudo apt upgrade -y```
 
 1. Dotnet is going to be necessary to run the GUI to perform sample size changes, buffer rate changes, and yabridge syncing (more on this later). Install dotnet 8.0 with the following command:<br>
    ```
@@ -32,9 +32,9 @@ Make sure you are fully updated with the following command: <code>sudo apt updat
    sudo apt-get install -y dotnet-runtime-8.0
    ```
 2. Reboot your PC
-3. Verify dotnet installed by opening a terminal and entering <code>dotnet --version</code>. At the time of writing this it should return <code>8.0.117</code>.
-4. We will use <b>curl</b> to automate the yabridge install process. Install curl with the following command: <code>sudo apt-get install -y curl</code>
-5. Verify curl was installed with <code>curl --version</code>. At the time of writing this apt installs version 8.5.0.
+3. Verify dotnet installed by opening a terminal and entering ```dotnet --version```. At the time of writing this it should return ```8.0.117```.
+4. We will use <b>curl</b> to automate the yabridge install process. Install curl with the following command: ```sudo apt-get install -y curl```
+5. Verify curl was installed with ```curl --version```. At the time of writing this apt installs version 8.5.0.
 6. Install Wine from apt 
    Note: this will install version 6.0.3 or 9.0 from apt. if you have a newer version of WINE installed you will need to uninstall it (see the FAQ for more info). You cannot use yabridge with any version newer than 9.20.<br>
     ```
@@ -44,13 +44,13 @@ Make sure you are fully updated with the following command: <code>sudo apt updat
    sudo apt-get install -y wine32
    ```
 8. Reboot your PC
-9. Verify WINE was installed by running <code>wine --version</code>
+9. Verify WINE was installed by running ```wine --version```
 10. Install Microsoft Fonts (and refresh your font cache) with the following code:<br>
     ```
     sudo apt-get install -y ttf-mscorefonts-installer
     fc-cache -f -v
     ```
-11. Install all versions of Pipewire with the following command: <code>sudo apt-get install -y pipewire pipewire-jack pipewire-alsa pipewire-pulse</code>
+11. Install all versions of Pipewire with the following command: ```sudo apt-get install -y pipewire pipewire-jack pipewire-alsa pipewire-pulse```
 12. Download and configure yabridge with the following commands:<br>
    ```
    curl -s https://api.github.com/repos/robbert-vdh/yabridge/releases/latest \
@@ -81,9 +81,9 @@ Make sure you are fully updated with the following command: <code>sudo apt updat
    $HOME/.local/share/yabridge/yabridgectl sync
    $HOME/.local/share/yabridge/yabridgectl status
    ```
-12. Verify yabridge was installed by running <code>yabridgectl --version</code>.
-13. Download the most recent release https://github.com/Heroin-Bob/AudioTools-for-Linux/releases
-    Note: If you want to build the app yourself you can download all the project files then run the "Run this to build.sh" file and it will build the app for you. You can find the final app in the directory you built the file from by drilling down into <b>~/.bin/Release/net8.0/linux-x64/publish</b>. You do not need any of the other files besides the AudioTools exe file. It is fully self-contained.
+12. Verify yabridge was installed by running ```yabridgectl --version```.
+13. Download the most recent release: https://github.com/Heroin-Bob/AudioTools-for-Linux/releases<br>
+    Note: If you want to build the app yourself you can download all the project files then run the <b>Run this to build.sh</b> file and it will build the app for you. You can find the final app in the directory you built the file from by drilling down into <b>bin/Release/net8.0/linux-x64/publish</b>. You do not need any of the other files besides the AudioTools exe file. It is fully self-contained.
 
 At this point your setup is finished and you can now install and use Windows plugins and keep up with them via the AudioTools GUI.
 
@@ -95,4 +95,4 @@ If you want to downgrade you can read this: https://github.com/robbert-vdh/yabri
 <b><i>Why did you build this GUI when you can do everything from the command line?</i></b><br>
 Because having to stop working on music to type or copy-paste commands into a terminal sucks, and when you're working with other people it really makes audio production on Linux look bad by comparison. I just want to click a button and have it do what I need it to do. This gives me those buttons.<br><br>
 <b><i>Why is this made in C# and not Python</b></i><br>
-I fucking tried to use Python since I know everyone uses it, but I simply couldn't get it to do what I wanted it to do. Every time I would get it working it would break after running pyinstaller! I had multiple people look at it and no one could make it make sense. After a week of slamming my head against my keyboard I abandoned it. I have a background in C# anyway, so that's what I went with, and it worked great. It is easier for me to code and easier for me to expand on later. If you'd like to port this over to Python then be my guest. But, if you need the terminal to run it at all then you're defeating the point of the GUI even existing.<br><br>
+I tried to use Python since I know everyone uses it, but I simply couldn't get it to do what I wanted it to do. Every time I would get it working it would break after running pyinstaller! I had multiple people look at it and no one could make it make sense. After a week of slamming my head against my keyboard I abandoned it. I have a background in C# anyway, so that's what I went with, and it worked great. It is easier for me to code and easier for me to expand on later. If you'd like to port this over to Python then be my guest. But, if you need the terminal to run it at all then you're defeating the point of the GUI even existing.<br><br>
