@@ -47,7 +47,8 @@ sudo apt-get install -y wine</code>
     fc-cache -f -v</code>
 10. Install all versions of Pipewire with the following command: <code>sudo apt-get install -y pipewire pipewire-jack pipewire-alsa pipewire-pulse</code>
 11. Download and configure yabridge with the following commands:<br>
-<code>curl -s https://api.github.com/repos/robbert-vdh/yabridge/releases/latest \
+```
+curl -s https://api.github.com/repos/robbert-vdh/yabridge/releases/latest \
 | grep "yabridge.*tar.gz" \
 | cut -d : -f 2,3 \
 | tr -d \" \
@@ -66,7 +67,8 @@ yabridgectl add "$HOME/Documents/vsts/dll and vst3 files"
 echo "Starting yabridge host..."
 $HOME/.local/share/yabridge/yabridge-host.exe
 $HOME/.local/share/yabridge/yabridgectl sync
-$HOME/.local/share/yabridge/yabridgectl status</code>
+$HOME/.local/share/yabridge/yabridgectl status
+```
 12. Verify yabridge was installed by running <code>yabridgectl --version</code>.
 13. Download the most recent release https://github.com/Heroin-Bob/AudioTools-for-Linux/releases
     Note: If you want to build the app yourself you can download all the project files then run the "Run this to build.sh" file and it will build the app for you. You can find the final app in the directory you built the file from by drilling down into <b>~/.bin/Release/net8.0/linux-x64/publish</b>. You do not need any of the other files besides the AudioTools exe file. It is fully self-contained.
