@@ -9,7 +9,7 @@ If you would like to fork this tool and modify it to work in non-Ubuntu based di
 ## Requirements
 All requirements are in the <b>setup reqs.sh</b> file. You do not need to install from any link below, this is just a list of requirements. Installation instructions will follow this section:
 - yabridge: https://github.com/robbert-vdh/yabridge
-- WINE (Pre-9.21 ONLY. 9.21 breaks yabridge): The setup for this installs from apt using WINE 6.0.3. If you use a more modern version of wine you will need to uninstall it (See FAQ)
+- WINE (Pre-9.21 ONLY. 9.21 breaks yabridge): The setup for this installs from apt and will install version 6.0.3 or 9.0 (depending on your setup). If you use a more modern version of wine you will need to uninstall it (See FAQ)
 - Microsoft Fonts
 - curl
 - dotnet 8.0
@@ -34,9 +34,9 @@ sudo apt-get install -y dotnet-runtime-8.0</code>
 4. We will use <b>curl</b> to automate the yabridge install process. Install curl with the following command: <code>sudo apt-get install -y curl</code>
 5. Verify curl was installed with <code>curl --version</code>. At the time of writing this apt installs version 8.5.0.
 6. Install Wine from apt with <code>sudo apt-get install -y wine </code><br>
-   Note: this will install version 6.0.3 from apt. if you have a newer version of WINE installed you will need to uninstall it (see the FAQ for more info). You cannot use yabridge with any version newer than 9.20.
+   Note: this will install version 6.0.3 or 9.0 from apt. if you have a newer version of WINE installed you will need to uninstall it (see the FAQ for more info). You cannot use yabridge with any version newer than 9.20.
 8. Reboot your PC
-9. Verify wine was installed by running <code>wine --version</code>. At the time of writing this apt installs version 6.0.3.
+9. Verify wine was installed by running <code>wine --version</code>. At the time of writing this apt installs version 6.0.3 or 9.0.
 10. Set up support for 32-bit wine with the following command:<br>
     <code>dpkg --add-architecture i386
 sudo apt-get install -y wine32
