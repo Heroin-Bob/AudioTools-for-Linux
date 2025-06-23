@@ -14,10 +14,10 @@ sudo apt-get install -y curl
 echo "Installing Wine:"
 sudo apt-get install -y wine 
 
-dpkg --add-architecture i386
-sudo apt-get install -y wine32
-sudo apt update && apt list "wine*"
 sudo dpkg --add-architecture i386
+sudo add-apt-repository ppa:ubuntu-wine/ppa
+sudo apt-get update
+sudo apt-get install wine1.8
 sudo apt-get install -y wine32
 
 
