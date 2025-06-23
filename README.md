@@ -46,8 +46,10 @@ Make sure you are fully updated with the following command: <code>sudo apt updat
 8. Reboot your PC
 9. Verify WINE was installed by running <code>wine --version</code>
 10. Install Microsoft Fonts (and refresh your font cache) with the following code:<br>
-    <code>sudo apt-get install -y ttf-mscorefonts-installer
-    fc-cache -f -v</code>
+    ```
+    sudo apt-get install -y ttf-mscorefonts-installer
+    fc-cache -f -v
+    ```
 11. Install all versions of Pipewire with the following command: <code>sudo apt-get install -y pipewire pipewire-jack pipewire-alsa pipewire-pulse</code>
 12. Download and configure yabridge with the following commands:<br>
    ```
