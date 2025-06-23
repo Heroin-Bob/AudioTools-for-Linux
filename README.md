@@ -38,11 +38,11 @@ sudo apt-get install -y dotnet-runtime-8.0</code>
 8. Reboot your PC
 9. Verify wine was installed by running <code>wine --version</code>. At the time of writing this apt installs version 6.0.3 or 9.0.
 10. Set up support for 32-bit wine with the following command:<br>
-    <code>dpkg --add-architecture i386
+    <code>sudo dpkg --add-architecture i386
+sudo add-apt-repository ppa:ubuntu-wine/ppa
+sudo apt-get update
 sudo apt-get install -y wine32
-sudo apt update && apt list "wine*"
-sudo dpkg --add-architecture i386
-sudo apt-get install -y wine32</code>
+sudo apt-get install -y wine</code>
 11. Install Microsoft Fonts (and refresh your font cache) with the following code:<br>
     <code>sudo apt-get install -y ttf-mscorefonts-installer
     fc-cache -f -v</code>
