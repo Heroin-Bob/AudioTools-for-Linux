@@ -20,6 +20,8 @@ This instructional is going to assume you have a fresh install of an Ubuntu-base
 
 You can follow the steps below or open the <b>setup reqs.sh</b> file (it is not advised to run the .sh file as it is, but rather take it section-by-section - but I'm not going to tell you how to live your life):
 
+Make sure you are fully updated with the following command: <code>sudo apt update && sudo apt upgrade -y</code>
+
 1. Dotnet is going to be necessary to run the GUI to perform sample size changes, buffer rate changes, and yabridge syncing (more on this later). Install dotnet 8.0 with the following command:<br>
 <code>wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
