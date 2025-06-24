@@ -13,9 +13,13 @@ sudo apt-get install -y curl
 
 echo "Installing Wine:"
 sudo dpkg --add-architecture i386
-sudo add-apt-repository ppa:ubuntu-wine/ppa
-sudo apt-get update
-sudo apt-get install -y wine32
+wget -O - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
+sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ jammy main'
+sudo apt update
+sudo apt install --install-recommends wine=9.0~repack-4build3
+
+# Verify installation
+wine --version
 
 
 echo "Installing Microsoft Fonts:"
