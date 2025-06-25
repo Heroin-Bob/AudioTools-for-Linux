@@ -29,7 +29,7 @@ You can follow the steps below or open the <b>setup reqs.sh</b> file (it is not 
 
 Make sure you are fully updated with the following command: ```sudo apt update && sudo apt upgrade -y```
 
-### Setup for just AudioTools
+### Setup for AudioTools
 
 If you are already using yabridge and already have pipewire then you do not need to go through the full setup. All you need is to install dotnet 8.0 to run AudioTools.
 
