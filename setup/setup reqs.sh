@@ -73,3 +73,13 @@ sleep 3
 echo 
 echo "This setup is now complete."
 echo 
+echo "Reboot your system now to finalize the setup."
+echo
+read -p "Do you want to reboot the system now? (y/n): " answer
+if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
+    echo "Rebooting the system..."
+    sudo reboot
+else
+    echo "Reboot canceled."
+    echo "It is recommended you reboot before using any installed packages."
+fi
