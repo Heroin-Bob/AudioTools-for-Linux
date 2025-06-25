@@ -4,6 +4,12 @@ clear
 # sudo apt update && sudo apt upgrade -y
 
 clear
+echo "Installing Microsoft Fonts..."
+sleep 3
+sudo apt-get install -y ttf-mscorefonts-installer
+fc-cache -f -v
+
+clear
 echo "Installing dotnet 8.0..."
 sleep 3
 wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
@@ -19,17 +25,9 @@ sleep 3
 sudo apt-get install -y curl
 
 clear
-echo "Installing Microsoft Fonts..."
-sleep 3
-sudo apt-get install -y ttf-mscorefonts-installer
-fc-cache -f -v
-
-clear
 echo "Installing Pipewire..."
 sleep 3
 sudo apt-get install -y pipewire pipewire-jack pipewire-alsa pipewire-pulse
-
-
 
 clear
 echo "Installing Wine..."
