@@ -44,7 +44,10 @@ sudo apt-get install -y wine32:i386
 wine --version
 sleep 3
 clear
-
+echo "Installing yabridge..."
+wget $(curl -s https://api.github.com/repos/robbert-vdh/yabridge/releases/latest | grep "yabridge.*tar.gz" | cut -d : -f 2,3 | tr -d \")
+sleep 3
+echo 
 echo "This setup is now complete."
 echo "You will now need to install yabridge."
 echo "A full yabridge setup script can be found here: https://github.com/Heroin-Bob/AudioTools-for-Linux/blob/main/setup%20yabridge.sh"
