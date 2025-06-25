@@ -4,10 +4,10 @@ else
  echo "dotnet not installed"
 fi
 echo 
-if which curl >/dev/null 2>&1; then
- echo "curl installed: $(curl --version)"
+if which wget >/dev/null 2>&1; then
+ echo "wget installed: $(wget --version)"
 else
- echo "curl not installed"
+ echo "wget not installed"
 fi
 echo 
 if which pipewire >/dev/null 2>&1; then
