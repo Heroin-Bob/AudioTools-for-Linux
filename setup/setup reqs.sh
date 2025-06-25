@@ -20,9 +20,9 @@ sudo apt-get install -y aspnetcore-runtime-8.0
 sudo apt-get install -y dotnet-runtime-8.0
 
 clear
-echo "Installing curl..."
+echo "Installing wget..."
 sleep 3
-sudo apt-get install -y curl
+sudo apt-get install -y wget
 
 clear
 echo "Installing Pipewire..."
@@ -43,9 +43,9 @@ sleep 3
 sudo apt-get install -y wine32:i386
 wine --version
 sleep 3
+
 clear
 echo "Installing yabridge..."
-#wget $(curl -s https://api.github.com/repos/robbert-vdh/yabridge/releases/latest | grep "yabridge.*tar.gz" | cut -d : -f 2,3 | tr -d \")
 wget -qO- https://api.github.com/repos/robbert-vdh/yabridge/releases/latest | grep "yabridge.*tar.gz" | cut -d : -f 2,3 | tr -d \" | xargs wget
 
 find . -name 'yabridge*.tar.gz' -exec tar -xzf {} -C . \;
@@ -72,7 +72,4 @@ $HOME/.local/share/yabridge/yabridgectl status
 sleep 3
 echo 
 echo "This setup is now complete."
-echo "You will now need to install yabridge."
-echo "A full yabridge setup script can be found here: https://github.com/Heroin-Bob/AudioTools-for-Linux/blob/main/setup%20yabridge.sh"
-echo "Note: The Setup Yabridge script uses curl to download the most recent version of yabridge. You MUST copy the code from the script and paste it into the terminal or curl will not download/setup yabridge."
 echo 
