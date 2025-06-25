@@ -11,7 +11,7 @@ All requirements are in the <b>setup reqs.sh</b> file. You do not need to instal
 - yabridge: https://github.com/robbert-vdh/yabridge
 - WINE (Pre-9.21 ONLY. 9.21 breaks yabridge): The setup for this installs from apt and will install version 6.0.3 or 9.0 (depending on your setup). If you use a more modern version of wine you will need to uninstall it (See FAQ)
 - Microsoft Fonts
-- curl
+- wget
 - dotnet 8.0
 - Pipewire: https://www.pipewire.org/
 
@@ -69,7 +69,7 @@ If you do not have anything installed from the requirements list below are the s
    ```
 2. Verify dotnet installed by opening a terminal and entering ```dotnet --version```. At the time of writing this it should return ```8.0.117```.
 3. We will use <b>wget</b> to automate the yabridge install process. Install wget with the following command: ```sudo apt-get install -y wget```
-4. Verify curl was installed with ```wget --version```. At the time of writing this apt installs version 8.5.0.
+4. Verify wget was installed with ```wget --version```. At the time of writing this apt installs version 8.5.0.
 5. Install Wine/Wine32 from apt 
    Note: this will install version 9.0 (or 6.0.3 depending on your setup) from apt. if you have a newer version of WINE installed you will need to uninstall it (see the FAQ for more info). You cannot use yabridge with any version newer than 9.20.<br>
     ```
