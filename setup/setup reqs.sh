@@ -55,10 +55,10 @@ mv ./yabridge $HOME/.local/share
 
 echo -e "\nexport PATH=\"\$PATH:\$HOME/.local/share/yabridge\"" >> ~/.bashrc
 source ~/.bashrc
-
+sleep 5
 echo "Making directories..."
 mkdir -p "$HOME/.wine/drive_c/Program Files/Steinberg/VstPlugins" "$HOME/.wine/drive_c/Program Files/Common Files/VST3" "$HOME/.wine/drive_c/Program Files/Common Files/CLAP" "$HOME/Documents/vsts/dll and vst3 files"
-
+sleep 5
 yabridgectl add "$HOME/.wine/drive_c/Program Files/Steinberg/VstPlugins"
 yabridgectl add "$HOME/.wine/drive_c/Program Files/Common Files/VST3"
 yabridgectl add "$HOME/.wine/drive_c/Program Files/Common Files/CLAP"
