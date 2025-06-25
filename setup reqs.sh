@@ -44,8 +44,6 @@ sudo apt-get install -y wine32:i386
 wine --version
 sleep 3
 clear
-echo "Downloading yabridge, moving to appropriate folder, and adding .bashrc path:"
-sleep 3
 
 echo "This setup is now complete."
 echo "You will now need to install yabridge."
