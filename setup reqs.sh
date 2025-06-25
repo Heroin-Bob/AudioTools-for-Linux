@@ -1,6 +1,11 @@
+clear
+echo "Updating and upgrading PC"
 sudo apt update && sudo apt upgrade -y
 
+clear
+sleep 3
 echo "Installing dotnet 8.0"
+sleep 3
 wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 sudo dpkg -i packages-microsoft-prod.deb
 rm packages-microsoft-prod.deb
@@ -8,27 +13,39 @@ sudo apt-get install -y dotnet-sdk-8.0
 sudo apt-get install -y aspnetcore-runtime-8.0
 sudo apt-get install -y dotnet-runtime-8.0
 
+clear
 echo "Installing curl"
+sleep 3
 sudo apt-get install -y curl
 
+clear
 echo "Installing Microsoft Fonts:"
+sleep 3
 sudo apt-get install -y ttf-mscorefonts-installer
 fc-cache -f -v
-	
+
+clear
 echo "Installing Pipewire..."
+sleep 3
 sudo apt-get install -y pipewire pipewire-jack pipewire-alsa pipewire-pulse
 
-echo "Downloading yabridge, moving to appropriate folder, and adding .bashrc path:"
 
+
+clear
 echo "Installing Wine:"
+sleep 3
 sudo apt install wine
 sudo dpkg --add-architecture i386
 sudo apt-get update
+clear
+echo "Installing Wine32:"
+sleep 3
 sudo apt-get install wine32:i386
-
-# Verify installation
 wine --version
-
+sleep 3
+clear
+echo "Downloading yabridge, moving to appropriate folder, and adding .bashrc path:"
+sleep 3
 curl -s https://api.github.com/repos/robbert-vdh/yabridge/releases/latest \
 | grep "yabridge.*tar.gz" \
 | cut -d : -f 2,3 \
