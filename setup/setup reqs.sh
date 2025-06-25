@@ -70,10 +70,13 @@ $HOME/.local/share/yabridge/yabridge-host.exe
 $HOME/.local/share/yabridge/yabridgectl sync
 $HOME/.local/share/yabridge/yabridgectl status
 sleep 3
+clear
 echo 
 echo "This setup is now complete."
 echo 
-echo "Reboot your system now to finalize the setup."
+yabridgectl --version
+echo
+echo "If you do not see an output reading 'yabridgectl x.x.x' above this line then you will need to reboot your pc and run the yabridgectl setup again."
 echo
 read -p "Do you want to reboot the system now? (y/n): " answer
 if [[ "$answer" == "y" || "$answer" == "Y" ]]; then
