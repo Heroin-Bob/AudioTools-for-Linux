@@ -35,8 +35,10 @@ clear
 echo "Installing Wine:"
 sleep 3
 sudo apt install wine
+sudo apt autoremove
 sudo dpkg --add-architecture i386
 sudo apt-get update
+sudo apt autoremove
 clear
 echo "Installing Wine32:"
 sleep 3
