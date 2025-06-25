@@ -24,7 +24,7 @@ You can follow the steps below or open the <b>setup reqs.sh</b> file (it is not 
 Make sure you are fully updated with the following command: ```sudo apt update && sudo apt upgrade -y```
 
 <details>
-<summary>Setup for AudioTools only</summary>
+<summary><b>Setup for AudioTools only</b></summary>
 <br>
 If you are already using yabridge and already have pipewire then you do not need to go through the full setup. All you need is to install dotnet 8.0 to run AudioTools.
 
@@ -42,7 +42,7 @@ Once completed you can download AudioTools from the Releases page https://github
 </details>
 
 <details>
-<summary>Automated Full Setup</summary>
+<summary><b>Automated Full Setup</b></summary>
 <br>
 To automatically perform all the necessary steps to install all the requirements download the <b>setup reqs.sh</b> file from the assets and run it. Be sure to monitor it and accept any options that come up.
 
@@ -54,7 +54,7 @@ You can now download AudioTools from the Releases page https://github.com/Heroin
 </details>
 
 <details>
-<summary>Manual Full Setup</summary>
+<summary><b>Manual Full Setup</b></summary>
 <br>
 If you do not have anything installed from the requirements list below are the steps to go through to get everything working. Be sure to follow each step exactly as it is written.
 
