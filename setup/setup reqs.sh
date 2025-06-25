@@ -48,3 +48,5 @@ clear
 echo "This setup is now complete."
 echo "You will now need to install yabridge."
 echo "A full yabridge setup script can be found here: https://github.com/Heroin-Bob/AudioTools-for-Linux/blob/main/setup%20yabridge.sh"
+echo "Note: The Setup Yabridge script uses curl to download the most recent version of yabridge. You MUST copy the code from the script and paste it into the terminal or curl will not download/setup yabridge."
+echo 
