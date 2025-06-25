@@ -11,17 +11,6 @@ sudo apt-get install -y dotnet-runtime-8.0
 echo "Installing curl"
 sudo apt-get install -y curl
 
-echo "Installing Wine:"
-sudo dpkg --add-architecture i386
-wget -O - https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add -
-sudo add-apt-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ jammy main'
-sudo apt update
-sudo apt install --install-recommends wine=9.0~repack-4build3
-
-# Verify installation
-wine --version
-
-
 echo "Installing Microsoft Fonts:"
 sudo apt-get install -y ttf-mscorefonts-installer
 fc-cache -f -v
@@ -30,6 +19,15 @@ echo "Installing Pipewire..."
 sudo apt-get install -y pipewire pipewire-jack pipewire-alsa pipewire-pulse
 
 echo "Downloading yabridge, moving to appropriate folder, and adding .bashrc path:"
+
+echo "Installing Wine:"
+sudo apt install wine
+sudo dpkg --add-architecture i386
+sudo apt-get update
+sudo apt-get install wine32:i386
+
+# Verify installation
+wine --version
 
 curl -s https://api.github.com/repos/robbert-vdh/yabridge/releases/latest \
 | grep "yabridge.*tar.gz" \
