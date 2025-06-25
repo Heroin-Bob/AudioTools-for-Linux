@@ -63,12 +63,12 @@ If you do not have anything installed from the requirements list below are the s
 4. We will use <b>curl</b> to automate the yabridge install process. Install curl with the following command: ```sudo apt-get install -y curl```
 5. Verify curl was installed with ```curl --version```. At the time of writing this apt installs version 8.5.0.
 6. Install Wine from apt 
-   Note: this will install version 6.0.3 or 9.0 from apt. if you have a newer version of WINE installed you will need to uninstall it (see the FAQ for more info). You cannot use yabridge with any version newer than 9.20.<br>
+   Note: this will install version 9.0 (or 6.0.3 depending on your setup) from apt. if you have a newer version of WINE installed you will need to uninstall it (see the FAQ for more info). You cannot use yabridge with any version newer than 9.20.<br>
     ```
+   sudo apt install wine
    sudo dpkg --add-architecture i386
-   sudo add-apt-repository ppa:ubuntu-wine/ppa
    sudo apt-get update
-   sudo apt-get install -y wine32
+   sudo apt-get install wine32:i386
    ```
 8. Reboot your PC
 9. Verify WINE was installed by running ```wine --version```
