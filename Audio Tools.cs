@@ -38,7 +38,7 @@ public class AudioTools
         var sampleButton = new Button("Set Sample Rate");
         sampleButton.Clicked += (sender, e) => {
             string selectedValue = sampleComboBox.ActiveText;
-            string concatCommand = "pw-metadata -n settings 0 clock.force-quantum " + selectedValue;
+            string concatCommand = "pw-metadata -n settings 0 clock.force-rate " + selectedValue;
             RunCommand(concatCommand);
         };
         hbox.PackStart(sampleButton, false, false, 5);
