@@ -11,7 +11,7 @@ public class AudioTools
         Application.Init();
 
         // Create the main window
-        var window = new Window("Yabridge Control");
+        var window = new Window("AudioTools");
         window.SetDefaultSize(400, 500);
         
         window.DeleteEvent += (o, args) => Application.Quit();
