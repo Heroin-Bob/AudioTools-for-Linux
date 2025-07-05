@@ -1,6 +1,7 @@
 # AudioTools For Linux (Ubuntu-based Only)
 
-![image](https://github.com/user-attachments/assets/e83b372d-8708-4ad5-b606-3a6268d0b21d)
+![image](https://github.com/user-attachments/assets/410c58f7-0781-49ea-8c90-eedff5eb99b6)
+
 
 This is a GUI tool developed in C# designed to enhance the ease-of-use of command-line interface audio tools in <a href="https://distrowatch.com/search.php?basedon=Ubuntu#simpleresults">Ubuntu based</a> Linux environments. I've included and simplified the setup and installation processes as part of the development of this tool. Currently, this tool is meant for Ubuntu and Ubuntu-based distributions.
 
