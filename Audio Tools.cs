@@ -11,16 +11,17 @@ public class AudioTools
         Application.Init();
 
         // Create the main window
-        var window = new Window("AudioTools");
+        var window = new Window("AudioTools v0.92");
         window.SetDefaultSize(400, 500);
-        
+        window.SetPosition(WindowPosition.Center);
         window.DeleteEvent += (o, args) => Application.Quit();
-
+	
         // Create a vertical box to hold the buttons and text view
         var vbox = new VBox();
-
+	
+	
         // Create an HBox to hold the two buttons side by side
-        var hbox = new HBox();
+	var hbox = new HBox();
 	
 	// Create a label
         var sammpleRateLabel = new Label("Sample Rate:");
@@ -82,8 +83,12 @@ public class AudioTools
         var statusButton = CreateButton("yabridgectl status", 150, 50);
         statusButton.Clicked += (sender, e) => RunCommand("$HOME/.local/share/yabridge/yabridgectl status");
 	
+	var pruneButton = CreateButton("yabridgectl prune", 150, 50);
+        pruneButton.Clicked += (sender, e) => RunCommand("$HOME/.local/share/yabridge/yabridgectl sync --prune");
+        
 	hbox.PackStart(syncButton, true, true, 5);
         hbox.PackStart(statusButton, true, true, 5);
+        hbox.PackStart(pruneButton, true, true, 5);
 	
 	vbox.PackStart(hbox, false, false, 5);
 	
@@ -108,18 +113,81 @@ public class AudioTools
         // Add the horizontal box and the scrolled window to the vertical box
         vbox.PackStart(hbox, false, false, 5);
         vbox.PackStart(scrolledWindow, true, true, 5);
-	vbox.PackStart(clearButton, false, false, 5);
+		vbox.PackStart(clearButton, false, false, 5);
 	
+        // Create the EventBox container which will handle clicks
+        EventBox eventBox = new EventBox();
+        eventBox.Events |= Gdk.EventMask.ButtonPressMask;
+        
+        // Create styled label (looks like a hyperlink)
+        Label linkLabel = new Label();
+        linkLabel.Markup = "<span foreground=\"aqua\" underline=\"single\">Click here to visit the Wiki!</span>";
+        linkLabel.Selectable = false;
+        
+        // Handle click to open URL
+        eventBox.ButtonPressEvent += (sender, args) => 
+        {
+            if (args.Event.Button == 1) // Left mouse button only
+            {
+                try
+                {
+                    Process.Start("xdg-open", "https://github.com/Heroin-Bob/AudioTools-for-Linux/wiki");
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error opening link: {ex.Message}");
+                }
+            }
+        };
+        
+        // Add label to event box, event box to vbox
+        eventBox.Add(linkLabel);
+        vbox.PackStart(eventBox, false, false, 0);
+		
         // Set the policy for the scrollbars
         scrolledWindow.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
 
         // Add the vertical box to the window
         window.Add(vbox);
         window.ShowAll();
+		
+        	string initCommand = @"#!/bin/bash        	
+			sampleRate=$(pw-metadata -n settings 0 clock.force-rate | grep -oP '\d+' | tail -n 1)
+			if [ $sampleRate -eq 0 ]; then
+				sampleRate=$(pw-metadata -n settings 0 clock.rate | grep -oP '\d+' | tail -n 2 | head -n 1)
+			fi
 
-        Application.Run();
+			bufferSize=$(pw-metadata -n settings 0 clock.force-quantum | grep -oP '\d+' | tail -n 1)
+			if [ $bufferSize -eq 0 ]; then
+				bufferSize=$(pw-metadata -n settings 0 clock.rate | grep -oP '\d+' | tail -n 2 | head -n 1)
+			fi
+
+			num_plugins=$(echo $($HOME/.local/share/yabridge/yabridgectl sync) | grep -oP '\d+' | tail -n 3 | head -n 1)
+			num_new_plugins=$(echo $($HOME/.local/share/yabridge/yabridgectl sync) | grep -oP '\d+' | tail -n 2 | head -n 1)
+
+			playbackDevices=$(pactl list sinks | grep -A1 Name:\ $(pactl get-default-sink) | grep Description | cut -d : -f2 | xargs)
+			recordingDevices=$(pactl list sources | grep -A1 Name:\ $(pactl get-default-source) | grep Description | cut -d : -f2 | xargs)
+#			playbackDevices=$(aplay -l | grep -i usb | awk -F'[][]' '{print $2}')
+#			recordingDevices=$(arecord -l | grep -i usb | awk -F'[][]' '{print $2}')
+
+			# Print the results
+			clear
+			echo Playback Device: $playbackDevices
+			echo Recording Device: $recordingDevices
+			echo 
+			echo Number of plugins: $num_plugins
+			echo Number of new plugins: $num_new_plugins
+			echo Sample Rate: $sampleRate
+			echo Buffer Size: $bufferSize
+			";
+            RunCommand(initCommand);
+
+            
+		Application.Run();
     }
-
+    
+    
     private Button CreateButton(string label, int width, int height)
     {
         var button = new Button(label)
@@ -183,7 +251,12 @@ public class AudioTools
         // Update the text view in the UI thread
         Application.Invoke(delegate
         {
-            outputTextView.Buffer.Text += text + "\n";
+            if (text.Contains("TERM environment variable not set")){
+            	outputTextView.Buffer.Text += text.Replace("Error: TERM environment variable not set.","");
+            } else {
+            	outputTextView.Buffer.Text += text + "\n";
+            }
+            
             outputTextView.ScrollToIter(outputTextView.Buffer.EndIter, 0, false, 0, 0);
         });
     }
