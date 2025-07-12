@@ -3,32 +3,42 @@ clear
 #echo "Updating and upgrading PC..."
 # sudo apt update && sudo apt upgrade -y
 
+# Microsoft Fonts are needed for windows applications to show properly
 clear
 echo "Installing Microsoft Fonts..."
 sleep 3
 sudo apt-get install -y ttf-mscorefonts-installer
 fc-cache -f -v
 
-clear
-echo "Installing dotnet 8.0..."
-sleep 3
-wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-sudo dpkg -i packages-microsoft-prod.deb
-rm packages-microsoft-prod.deb
-sudo apt-get install -y dotnet-sdk-8.0
-sudo apt-get install -y aspnetcore-runtime-8.0
-sudo apt-get install -y dotnet-runtime-8.0
+# Removing dotnet from required install commands for now. Leaving in comments for troubleshooting as a fail safe. If found to be completely unnecessary then I will remove from the req file in the future.
+#clear
+#echo "Installing dotnet 8.0..."
+#sleep 3
+#wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+#sudo dpkg -i packages-microsoft-prod.deb
+#rm packages-microsoft-prod.deb
+#sudo apt-get install -y dotnet-sdk-8.0
+#sudo apt-get install -y aspnetcore-runtime-8.0
+#sudo apt-get install -y dotnet-runtime-8.0
 
+# wget will be used later to install yabridge
 clear
 echo "Installing wget..."
 sleep 3
 sudo apt-get install -y wget
 
+# Pipewire is necessary for adjusting sample rates and buffer sizes
 clear
 echo "Installing Pipewire..."
 sleep 3
 sudo apt-get install -y pipewire pipewire-jack pipewire-alsa pipewire-pulse
 
+# pactl is for retrieving data about your audio devices
+clear
+echo "Install pactl..."
+sudo apt-get install -y pulseaudio-utils
+
+# Is WINE
 clear
 echo "Installing Wine..."
 sleep 3
@@ -44,6 +54,7 @@ sudo apt-get install -y wine32:i386
 wine --version
 sleep 3
 
+# yabridge is necessary to run windows plugins
 clear
 echo "Installing yabridge..."
 wget -qO- https://api.github.com/repos/robbert-vdh/yabridge/releases/latest | grep "yabridge.*tar.gz" | cut -d : -f 2,3 | tr -d \" | xargs wget
