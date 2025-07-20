@@ -8,11 +8,12 @@ public class AudioTools
     private TextView outputTextView;
 
     public AudioTools()
-    {
+    {    	
         Application.Init();
-
+	
+        
         // Create the main window
-        var appVersion = "0.93";
+        var appVersion = "0.94";
         var window = new Window("AudioTools v" + appVersion);
         window.SetDefaultSize(400, 500);
         window.SetPosition(WindowPosition.Center);
@@ -134,7 +135,66 @@ public class AudioTools
         hbox.PackStart(bufferButton, false, false, 5);
 
 
+	hbox = new HBox();
 
+        // Create a label
+        var yabridgeLabel = new Label("Yabridge:");
+        hbox.PackStart(yabridgeLabel, false, false, 5);
+
+        // Create a dropdown (ComboBox)
+        var yabridgeComboBox = new ComboBoxText();
+        yabridgeComboBox.AppendText("sync");
+        yabridgeComboBox.AppendText("status");
+        yabridgeComboBox.AppendText("prune");
+        yabridgeComboBox.AppendText("list");
+        yabridgeComboBox.AppendText("verbose");
+        yabridgeComboBox.AppendText("help");
+        hbox.PackStart(yabridgeComboBox, false, false, 5);
+
+        vbox.PackStart(hbox, false, true, 5);
+
+        // Create a button
+        var yabridgeButton = new Button("Run");
+        yabridgeButton.Clicked += (sender, e) =>
+        {
+            string selectedValue = yabridgeComboBox.ActiveText;
+            string outCommand = "";
+            switch (selectedValue)
+		{
+		   case "sync":
+		      outCommand = "$HOME/.local/share/yabridge/yabridgectl sync";
+		   break;
+		   case "status":
+		      outCommand = "$HOME/.local/share/yabridge/yabridgectl status";
+		   break;
+		   case "prune":
+			outCommand = "$HOME/.local/share/yabridge/yabridgectl sync -p";
+		   break;
+		   case "list":
+		   	outCommand = "$HOME/.local/share/yabridge/yabridgectl list";
+		   break;
+		   case "verbose":
+		   	outCommand = "$HOME/.local/share/yabridge/yabridgectl sync -v";
+		   break;
+		   case "help":
+		   	RunCommand(@"echo Below is a list of commands that can be executed from AudioTools. For advanced steps visit https://github.com/robbert-vdh/yabridge.
+		   	echo -------------------------------
+		   	echo - sync: performs a sync between the paths for installed plugins and yabridge. 
+		   	echo - status: view the currently synced plugins and review their install locations.
+		   	echo - prune: performs a sync but also checks for plugins that are no longer installed and removes them from yabridge.
+		   	echo - list: views the directories that yabridge looks for plugins within.
+		   	echo - verbose: forces resync with all plugins. CAUTION: you may need to re-register/re-activate your plugins after running this command. Use only for last-resort debugging.");
+		   break;
+		   default:
+		      outCommand = "";
+		   break;
+		}
+            RunCommand(outCommand);
+        };
+        hbox.PackStart(yabridgeButton, false, false, 5);
+
+
+/*
         hbox = new HBox();
 
         // Create the buttons with customizable properties
@@ -152,8 +212,7 @@ public class AudioTools
         hbox.PackStart(pruneButton, true, true, 5);
 
         vbox.PackStart(hbox, false, false, 5);
-
-        // Add the buttons to the horizontal box
+*/
 
 
         // Create the Clear button
@@ -260,9 +319,12 @@ public class AudioTools
 
     private void RunCommand(string command)
     {
+    	var startIter = outputTextView.Buffer.StartIter;
+        outputTextView.ScrollToIter(startIter, 0, true, 0, 0);
         // Clear previous output
         outputTextView.Buffer.Text = "";
-
+	
+	
         // Set up the process start info
         var processStartInfo = new ProcessStartInfo
         {
