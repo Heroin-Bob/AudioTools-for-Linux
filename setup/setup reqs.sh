@@ -29,48 +29,47 @@ sudo apt-get install -y pulseaudio-utils
 
 # Wine 9.21 Installation Script
 # This script installs Wine 9.21 staging with 32-bit compatibility
-#!/bin/bash
 
 # 1. Enable 32-bit architecture
-echo "Enabling 32-bit architecture for wine32..."
+echo "Enabling 32-bit architecture..."
 sudo dpkg --add-architecture i386
 
-# 2. Identify Distribution and Codename
-OS_ID=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
-OS_CODENAME=$(lsb_release -cs)
+# 2. Identify the Base Distribution
+# We check /etc/os-release for the ID or ID_LIKE fields
+if grep -qi "ubuntu" /etc/os-release; then
+    BASE_DISTRO="ubuntu"
+    # For Ubuntu derivatives, we need the underlying Ubuntu codename (e.g., 'noble' or 'jammy')
+    CODENAME=$(. /etc/os-release; echo $UBUNTU_CODENAME)
+    # Fallback if UBUNTU_CODENAME is empty (some distros don't set it)
+    [[ -z "$CODENAME" ]] && CODENAME=$(lsb_release -cs)
+elif grep -qi "debian" /etc/os-release; then
+    BASE_DISTRO="debian"
+    CODENAME=$(lsb_release -cs)
+else
+    echo "Error: This system does not appear to be based on Debian or Ubuntu."
+    exit 1
+fi
 
-echo "Detected System: $OS_ID ($OS_CODENAME)"
+echo "Detected Base: $BASE_DISTRO"
+echo "Detected Codename: $CODENAME"
 
-# 3. Download and add WineHQ GPG key
+# 3. Setup WineHQ Keyring
 sudo mkdir -pm 755 /etc/apt/keyrings
 sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
 
-# 4. Add the correct repository based on OS
-case "$OS_ID" in
-    ubuntu)
-        sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/$OS_CODENAME/winehq-$OS_CODENAME.sources
-        ;;
-    debian)
-        sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/$OS_CODENAME/winehq-$OS_CODENAME.sources
-        ;;
-    *)
-        echo "Unsupported distribution: $OS_ID"
-        exit 1
-        ;;
-esac
+# 4. Add Repository based on the detected Base
+sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/$BASE_DISTRO/dists/$CODENAME/winehq-$CODENAME.sources
 
-# 5. Update package lists
+# 5. Update and Install
 sudo apt update
 
-# 6. Install Wine 9.21 (Development Branch)
-# Note: As of this script's context, 9.21 is a specific dev version.
-# To pin a specific version, we specify it in the apt install command.
-echo "Installing Wine 9.21 and 32-bit dependencies..."
+# Installing 9.21 specifically across all necessary components
+echo "Installing Wine 9.21 for $CODENAME..."
 sudo apt install --install-recommends \
-    winehq-devel=9.21~$OS_CODENAME-1 \
-    wine-devel=9.21~$OS_CODENAME-1 \
-    wine-devel-amd64=9.21~$OS_CODENAME-1 \
-    wine-devel-i386=9.21~$OS_CODENAME-1
+    winehq-devel=9.21~$CODENAME-1 \
+    wine-devel=9.21~$CODENAME-1 \
+    wine-devel-amd64=9.21~$CODENAME-1 \
+    wine-devel-i386=9.21~$CODENAME-1
 
 # yabridge is necessary to run windows plugins
 clear
