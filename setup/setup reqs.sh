@@ -27,79 +27,120 @@ clear
 echo "Install pactl..."
 sudo apt-get install -y pulseaudio-utils
 
-# Is WINE
+# Install Wine 9.2
 clear
-echo "Checking Wine installation..."
+echo "Installing Wine 9.2..."
 sleep 3
 
+# 1. Detect the distro
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    echo "Detected distribution: $NAME $VERSION_ID"
+    
+    # 2. Detect whether that distro is running on ubuntu or debian
+    if [ "$ID" = "ubuntu" ]; then
+        BASE_DISTRO="ubuntu"
+        BASE_VERSION="$VERSION_ID"
+        echo "Base distro: Ubuntu $BASE_VERSION"
+    elif [ "$ID" = "debian" ]; then
+        BASE_DISTRO="debian"
+        BASE_VERSION="$VERSION_ID"
+        echo "Base distro: Debian $BASE_VERSION"
+    elif [ "$ID" = "linuxmint" ]; then
+        # Linux Mint is based on Ubuntu
+        BASE_DISTRO="ubuntu"
+        case "$VERSION_ID" in
+            "21"*)
+                BASE_VERSION="22.04"
+                ;;
+            "22"*)
+                BASE_VERSION="22.04"
+                ;;
+            *)
+                BASE_VERSION="22.04"
+                ;;
+        esac
+        echo "Base distro: Ubuntu $BASE_VERSION (Linux Mint $VERSION_ID)"
+    else
+        echo "Unsupported distribution: $ID"
+        exit 1
+    fi
+else
+    echo "Cannot detect distribution"
+    exit 1
+fi
+
+# 3. Determine which version of ubuntu or debian the distro is on
+# (Already done above with BASE_VERSION)
+
+# 4. Find the appropriate version of wine 9.2 that matches that version from winehq.org
+# 5. Download the appropriate version
+# 6. Install that specific distro's release of wine 9.2
+
+# Add 32-bit architecture support
+sudo dpkg --add-architecture i386
+
+# Create keyrings directory and add WineHQ GPG key
+sudo mkdir -pm755 /etc/apt/keyrings
+sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+
+# Add repository based on detected base distro and version
+if [ "$BASE_DISTRO" = "ubuntu" ]; then
+    case "$BASE_VERSION" in
+        "20.04"|"focal")
+            REPO_DISTRO="focal"
+            ;;
+        "22.04"|"jammy")
+            REPO_DISTRO="jammy"
+            ;;
+        "24.04"|"noble")
+            REPO_DISTRO="noble"
+            ;;
+        *)
+            REPO_DISTRO="jammy"
+            echo "Using Ubuntu 22.04 (Jammy) repository for compatibility"
+            ;;
+    esac
+    
+    # Download Ubuntu repository file
+    sudo wget -NP /etc/apt/sources.list.d/ "https://dl.winehq.org/wine-builds/ubuntu/dists/${REPO_DISTRO}/winehq-${REPO_DISTRO}.sources"
+    
+elif [ "$BASE_DISTRO" = "debian" ]; then
+    case "$BASE_VERSION" in
+        "10"|"buster")
+            REPO_DISTRO="buster"
+            ;;
+        "11"|"bullseye")
+            REPO_DISTRO="bullseye"
+            ;;
+        "12"|"bookworm")
+            REPO_DISTRO="bookworm"
+            ;;
+        *)
+            REPO_DISTRO="bookworm"
+            echo "Using Debian 12 (Bookworm) repository for compatibility"
+            ;;
+    esac
+    
+    # Download Debian repository file
+    sudo wget -NP /etc/apt/sources.list.d/ "https://dl.winehq.org/wine-builds/debian/dists/${REPO_DISTRO}/winehq-${REPO_DISTRO}.sources"
+fi
+
+# Update package lists
+sudo apt-get update
+
+# Install Wine 9.2 stable specifically
+echo "Installing Wine 9.2..."
+sudo apt-get install -y --install-recommends winehq-stable=9.2~*
+sudo apt-get install -y wine32:i386
+
+# Verify installation
 if command -v wine >/dev/null 2>&1; then
     wine_version=$(wine --version)
-    echo "Wine is already installed: $wine_version"
-    echo "Skipping Wine installation"
+    echo "Wine 9.2 installed successfully: $wine_version"
 else
-    echo "Wine not found, proceeding with installation"
-    
-    # Check what distro we're on
-    if [ -f /etc/os-release ]; then
-        . /etc/os-release
-        echo "Detected: $NAME $VERSION_ID"
-        
-        # Linux Mint is based on Ubuntu, so handle that case
-        if [ "$ID" = "linuxmint" ]; then
-            if [ "$VERSION_ID" = "22" ]; then
-                echo "Linux Mint 22 detected, using Ubuntu 22.04 repositories"
-                BASE_DISTRO="ubuntu"
-                BASE_VERSION="22.04"
-            fi
-        elif [ "$ID" = "ubuntu" ]; then
-            BASE_DISTRO="ubuntu"
-            BASE_VERSION="$VERSION_ID"
-        elif [ "$ID" = "debian" ]; then
-            BASE_DISTRO="debian"
-            BASE_VERSION="$VERSION_ID"
-        fi
-    fi
-    
-    # Add 32-bit architecture
-    sudo dpkg --add-architecture i386
-    sudo apt-get update
-    
-    # Add Wine repository
-    sudo mkdir -pm755 /etc/apt/keyrings
-    sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
-    
-    # Add repository based on base distro
-    if [ "$BASE_DISTRO" = "ubuntu" ]; then
-        case "$BASE_VERSION" in
-            "22.04"|"jammy")
-                sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/jammy/winehq-jammy.sources
-                ;;
-            "24.04"|"noble")
-                sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources
-                ;;
-            *)
-                sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/jammy/winehq-jammy.sources
-                ;;
-        esac
-    elif [ "$BASE_DISTRO" = "debian" ]; then
-        case "$BASE_VERSION" in
-            "11"|"bullseye")
-                sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bullseye/winehq-bullseye.sources
-                ;;
-            "12"|"bookworm")
-                sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources
-                ;;
-            *)
-                sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/bookworm/winehq-bookworm.sources
-                ;;
-        esac
-    fi
-    
-    sudo apt-get update
-    sudo apt-get install -y --install-recommends winehq-stable=9.2~*
-    sudo apt-get install -y wine32:i386
-    
-    wine --version
+    echo "Wine installation failed"
+    exit 1
 fi
 sleep 3
 
