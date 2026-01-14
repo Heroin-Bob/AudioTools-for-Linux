@@ -43,7 +43,9 @@ echo "Downloading Wine repository key..."
 wget -nc https://dl.winehq.org/wine-builds/winehq.key
 
 echo "Adding Wine repository key..."
-sudo apt-key add winehq.key
+sudo mkdir -pm755 /etc/apt/keyrings
+wget -O - https://dl.winehq.org/wine-builds/winehq.key | sudo gpg --dearmor -o /etc/apt/keyrings/winehq-archive.key -
+
 
 # Add Wine repository
 echo "Adding Wine repository..."
