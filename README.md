@@ -1,4 +1,4 @@
-# AudioTools For Linux (Ubuntu-based Only)
+# AudioTools For Linux (Ubuntu/Debian-based Only)
 
 <img width="420" height="555" alt="image" src="https://github.com/user-attachments/assets/85a91a39-003e-43b2-b8af-0b430c57a107" />
 
