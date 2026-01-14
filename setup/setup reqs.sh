@@ -27,219 +27,54 @@ clear
 echo "Install pactl..."
 sudo apt-get install -y pulseaudio-utils
 
-# Install Wine 9.0
-clear
-echo "Installing Wine 9.0..."
-sleep 3
+# Wine 9.21 Installation Script
+# This script installs Wine 9.21 staging with 32-bit compatibility
 
-# 1. Detect the distro
-if [ -f /etc/os-release ]; then
-    . /etc/os-release
-    echo "Detected distribution: $NAME $VERSION_ID"
-    
-    # 2. Detect whether that distro is running on ubuntu or debian
-    if [ "$ID" = "ubuntu" ]; then
-        BASE_DISTRO="ubuntu"
-        BASE_VERSION="$VERSION_ID"
-        echo "Base distro: Ubuntu $BASE_VERSION"
-    elif [ "$ID" = "debian" ]; then
-        BASE_DISTRO="debian"
-        BASE_VERSION="$VERSION_ID"
-        echo "Base distro: Debian $BASE_VERSION"
-    elif [ "$ID" = "linuxmint" ]; then
-        # Linux Mint is based on Ubuntu
-        BASE_DISTRO="ubuntu"
-        case "$VERSION_ID" in
-            "21"*)
-                BASE_VERSION="22.04"
-                ;;
-            "22"*)
-                BASE_VERSION="22.04"
-                ;;
-            *)
-                BASE_VERSION="22.04"
-                ;;
-        esac
-        echo "Base distro: Ubuntu $BASE_VERSION (Linux Mint $VERSION_ID)"
-    else
-        echo "Unsupported distribution: $ID"
-        exit 1
-    fi
-else
-    echo "Cannot detect distribution"
-    exit 1
-fi
+set -e  # Exit on any error
 
-# 3. Determine which version of ubuntu or debian the distro is on
-# (Already done above with BASE_VERSION)
+echo "Starting Wine 9.21 installation..."
 
-echo "Final determination: $BASE_DISTRO $BASE_VERSION"
-
-# Add 32-bit architecture support
-sudo dpkg --add-architecture i386
-sudo apt-get update
-
-# Install wget if not available (needed for repository setup)
-if ! command -v wget >/dev/null 2>&1; then
-    echo "Installing wget..."
-    sudo apt-get install -y wget
-fi
-
-# 4. Find the appropriate version of wine 9.0 that matches that version from winehq.org
-# 5. Download the appropriate version
-# 6. Install that specific distro's release of wine 9.0
-
-# Create keyrings directory and add WineHQ GPG key
-sudo mkdir -pm755 /etc/apt/keyrings
-sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
-
-# Add repository based on detected base distro and version
-if [ "$BASE_DISTRO" = "ubuntu" ]; then
-    case "$BASE_VERSION" in
-        "20.04"|"focal")
-            REPO_DISTRO="focal"
-            ;;
-        "22.04"|"jammy")
-            REPO_DISTRO="jammy"
-            ;;
-        "24.04"|"noble")
-            REPO_DISTRO="noble"
-            ;;
-        *)
-            REPO_DISTRO="jammy"
-            echo "Using Ubuntu 22.04 (Jammy) repository for compatibility"
-            ;;
-    esac
-    
-    # Download Ubuntu repository file
-    sudo wget -NP /etc/apt/sources.list.d/ "https://dl.winehq.org/wine-builds/ubuntu/dists/${REPO_DISTRO}/winehq-${REPO_DISTRO}.sources"
-    
-elif [ "$BASE_DISTRO" = "debian" ]; then
-    case "$BASE_VERSION" in
-        "10"|"buster")
-            REPO_DISTRO="buster"
-            ;;
-        "11"|"bullseye")
-            REPO_DISTRO="bullseye"
-            ;;
-        "12"|"bookworm")
-            REPO_DISTRO="bookworm"
-            ;;
-        *)
-            REPO_DISTRO="bookworm"
-            echo "Using Debian 12 (Bookworm) repository for compatibility"
-            ;;
-    esac
-    
-    # Download Debian repository file
-    sudo wget -NP /etc/apt/sources.list.d/ "https://dl.winehq.org/wine-builds/debian/dists/${REPO_DISTRO}/winehq-${REPO_DISTRO}.sources"
-fi
-
-echo "Repository distro selected: $REPO_DISTRO"
-
-# Update package lists
-sudo apt-get update
-
-# Install Wine 9.0 specifically from stable branch
-echo "Installing Wine 9.0 from stable branch..."
-sudo apt-get install -y --install-recommends winehq-stable=9.0.0~${REPO_DISTRO}-1
-
-# Fallback: if specific version doesn't work, try to install from development repository
-if [ $? -ne 0 ]; then
-    echo "Wine 9.0 not available in stable, trying development repository..."
-    # Try to install from development (will get latest available)
-    sudo apt-get install -y --install-recommends winehq-devel
-fi
-
-# Install wine32 for 32-bit support
-sudo apt-get install -y wine32:i386
-
-# Verify installation
-if command -v wine >/dev/null 2>&1; then
-    wine_version=$(wine --version)
-    echo "SUCCESS: Wine installed: $wine_version"
-else
-    echo "FAILED: Wine installation failed"
-    exit 1
-fi
-else
-    echo "Cannot detect distribution"
-    exit 1
-fi
-
-# 3. Determine which version of ubuntu or debian the distro is on
-# (Already done above with BASE_VERSION)
-
-# 4. Find the appropriate version of wine 9.2 that matches that version from winehq.org
-# 5. Download the appropriate version
-# 6. Install that specific distro's release of wine 9.2
-
-# Add 32-bit architecture support
+# Add i386 architecture for 32-bit support
+echo "Adding i386 architecture..."
 sudo dpkg --add-architecture i386
 
-# Create keyrings directory and add WineHQ GPG key
-sudo mkdir -pm755 /etc/apt/keyrings
-sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+# Download and add Wine repository key
+echo "Downloading Wine repository key..."
+wget -nc https://dl.winehq.org/wine-builds/winehq.key
 
-# Add repository based on detected base distro and version
-if [ "$BASE_DISTRO" = "ubuntu" ]; then
-    case "$BASE_VERSION" in
-        "20.04"|"focal")
-            REPO_DISTRO="focal"
-            ;;
-        "22.04"|"jammy")
-            REPO_DISTRO="jammy"
-            ;;
-        "24.04"|"noble")
-            REPO_DISTRO="noble"
-            ;;
-        *)
-            REPO_DISTRO="jammy"
-            echo "Using Ubuntu 22.04 (Jammy) repository for compatibility"
-            ;;
-    esac
-    
-    # Download Ubuntu repository file
-    sudo wget -NP /etc/apt/sources.list.d/ "https://dl.winehq.org/wine-builds/ubuntu/dists/${REPO_DISTRO}/winehq-${REPO_DISTRO}.sources"
-    
-elif [ "$BASE_DISTRO" = "debian" ]; then
-    case "$BASE_VERSION" in
-        "10"|"buster")
-            REPO_DISTRO="buster"
-            ;;
-        "11"|"bullseye")
-            REPO_DISTRO="bullseye"
-            ;;
-        "12"|"bookworm")
-            REPO_DISTRO="bookworm"
-            ;;
-        *)
-            REPO_DISTRO="bookworm"
-            echo "Using Debian 12 (Bookworm) repository for compatibility"
-            ;;
-    esac
-    
-    # Download Debian repository file
-    sudo wget -NP /etc/apt/sources.list.d/ "https://dl.winehq.org/wine-builds/debian/dists/${REPO_DISTRO}/winehq-${REPO_DISTRO}.sources"
-fi
+echo "Adding Wine repository key..."
+sudo apt-key add winehq.key
+
+# Add Wine repository
+echo "Adding Wine repository..."
+sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ focal main"
 
 # Update package lists
-sudo apt-get update
+echo "Updating package lists..."
+sudo apt update
 
-# Install Wine 9.2 stable specifically
-echo "Installing Wine 9.2..."
-sudo apt-get install -y --install-recommends winehq-stable=9.2~*
-sudo apt-get install -y wine32:i386
+# Install Wine 9.21 staging packages
+echo "Installing Wine 9.21 staging packages..."
+sudo apt install --install-recommends wine-staging-i386=9.21~focal-1 -y
+sudo apt install --install-recommends wine-staging-amd64=9.21~focal-1 -y
+sudo apt install --install-recommends wine-staging=9.21~focal-1 -y
+sudo apt install --install-recommends winehq-staging=9.21~focal-1 -y
 
-# Verify installation
-if command -v wine >/dev/null 2>&1; then
-    wine_version=$(wine --version)
-    echo "Wine 9.2 installed successfully: $wine_version"
-else
-    echo "Wine installation failed"
-    exit 1
-fi
-sleep 3
+# Install additional 32-bit compatibility packages
+echo "Installing 32-bit compatibility packages..."
+sudo apt install --install-recommends wine32 -y
+sudo apt install --install-recommends libwine -y
+
+# Install common dependencies for Windows applications
+echo "Installing common Windows application dependencies..."
+sudo apt install --install-recommends winbind -y
+sudo apt install --install-recommends cabextract -y
+
+# Clean up downloaded key file
+rm -f winehq.key
+
+echo "Wine 9.21 installation completed!"
+echo "You can now configure Wine by running: winecfg"
 
 # yabridge is necessary to run windows plugins
 clear
