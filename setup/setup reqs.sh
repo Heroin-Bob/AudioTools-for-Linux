@@ -29,54 +29,48 @@ sudo apt-get install -y pulseaudio-utils
 
 # Wine 9.21 Installation Script
 # This script installs Wine 9.21 staging with 32-bit compatibility
+#!/bin/bash
 
-set -e  # Exit on any error
-
-echo "Starting Wine 9.21 installation..."
-
-# Add i386 architecture for 32-bit support
-echo "Adding i386 architecture..."
+# 1. Enable 32-bit architecture
+echo "Enabling 32-bit architecture for wine32..."
 sudo dpkg --add-architecture i386
 
-# Download and add Wine repository key
-echo "Downloading Wine repository key..."
-wget -nc https://dl.winehq.org/wine-builds/winehq.key
+# 2. Identify Distribution and Codename
+OS_ID=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
+OS_CODENAME=$(lsb_release -cs)
 
-echo "Adding Wine repository key..."
-sudo mkdir -pm755 /etc/apt/keyrings
-wget -O - https://dl.winehq.org/wine-builds/winehq.key | sudo gpg --dearmor -o /etc/apt/keyrings/winehq-archive.key -
+echo "Detected System: $OS_ID ($OS_CODENAME)"
 
+# 3. Download and add WineHQ GPG key
+sudo mkdir -pm 755 /etc/apt/keyrings
+sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
 
-# Add Wine repository
-echo "Adding Wine repository..."
-sudo apt-add-repository "deb https://dl.winehq.org/wine-builds/ubuntu/ focal main"
+# 4. Add the correct repository based on OS
+case "$OS_ID" in
+    ubuntu)
+        sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/$OS_CODENAME/winehq-$OS_CODENAME.sources
+        ;;
+    debian)
+        sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/debian/dists/$OS_CODENAME/winehq-$OS_CODENAME.sources
+        ;;
+    *)
+        echo "Unsupported distribution: $OS_ID"
+        exit 1
+        ;;
+esac
 
-# Update package lists
-echo "Updating package lists..."
+# 5. Update package lists
 sudo apt update
 
-# Install Wine 9.21 staging packages
-echo "Installing Wine 9.21 staging packages..."
-sudo apt install --install-recommends wine-staging-i386=9.21~focal-1 -y
-sudo apt install --install-recommends wine-staging-amd64=9.21~focal-1 -y
-sudo apt install --install-recommends wine-staging=9.21~focal-1 -y
-sudo apt install --install-recommends winehq-staging=9.21~focal-1 -y
-
-# Install additional 32-bit compatibility packages
-echo "Installing 32-bit compatibility packages..."
-sudo apt install --install-recommends wine32 -y
-sudo apt install --install-recommends libwine -y
-
-# Install common dependencies for Windows applications
-echo "Installing common Windows application dependencies..."
-sudo apt install --install-recommends winbind -y
-sudo apt install --install-recommends cabextract -y
-
-# Clean up downloaded key file
-rm -f winehq.key
-
-echo "Wine 9.21 installation completed!"
-echo "You can now configure Wine by running: winecfg"
+# 6. Install Wine 9.21 (Development Branch)
+# Note: As of this script's context, 9.21 is a specific dev version.
+# To pin a specific version, we specify it in the apt install command.
+echo "Installing Wine 9.21 and 32-bit dependencies..."
+sudo apt install --install-recommends \
+    winehq-devel=9.21~$OS_CODENAME-1 \
+    wine-devel=9.21~$OS_CODENAME-1 \
+    wine-devel-amd64=9.21~$OS_CODENAME-1 \
+    wine-devel-i386=9.21~$OS_CODENAME-1
 
 # yabridge is necessary to run windows plugins
 clear
