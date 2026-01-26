@@ -65,7 +65,7 @@ If you do not have anything installed from the requirements list below are the s
 2. We will use <b>wget</b> to automate the yabridge install process. Install wget with the following command: ```sudo apt-get install -y wget```
 3. Verify wget was installed with ```wget --version```. At the time of writing this apt installs version 8.5.0.
 4. Install Wine/Wine32 from apt 
-   Note: this will install version 9.0 (or 6.0.3 depending on your setup) from apt. if you have a newer version of WINE installed you will need to uninstall it (see the FAQ for more info). You cannot use yabridge with any version newer than 9.20.<br>
+   Note: this will install version 9.21 from apt. If you have a newer version of WINE installed you will need to uninstall it (see the FAQ for more info). You cannot use yabridge with any version newer than 9.21.<br>
     ```
    # 1. Enable 32-bit architecture
    echo "Enabling 32-bit architecture..."
