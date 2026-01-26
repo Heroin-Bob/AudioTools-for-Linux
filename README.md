@@ -61,37 +61,62 @@ You can now download AudioTools from the Releases page https://github.com/Heroin
 <br>
 If you do not have anything installed from the requirements list below are the steps to go through to get everything working. Be sure to follow each step exactly as it is written.
 
-1. Dotnet is going to be necessary to run the GUI to perform sample size changes, buffer rate changes, and yabridge syncing (more on this later). Install dotnet 8.0 with the following command:<br>
-   ```
-   wget https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-   sudo dpkg -i packages-microsoft-prod.deb
-   rm packages-microsoft-prod.deb
-   sudo apt-get install -y dotnet-sdk-8.0
-   sudo apt-get install -y aspnetcore-runtime-8.0
-   sudo apt-get install -y dotnet-runtime-8.0
-   ```
-2. Verify dotnet installed by opening a terminal and entering ```dotnet --version```. At the time of writing this it should return ```8.0.117```.
-3. We will use <b>wget</b> to automate the yabridge install process. Install wget with the following command: ```sudo apt-get install -y wget```
-4. Verify wget was installed with ```wget --version```. At the time of writing this apt installs version 8.5.0.
-5. Install Wine/Wine32 from apt 
+1. Verify dotnet installed by opening a terminal and entering ```dotnet --version```. At the time of writing this it should return ```8.0.117```.
+2. We will use <b>wget</b> to automate the yabridge install process. Install wget with the following command: ```sudo apt-get install -y wget```
+3. Verify wget was installed with ```wget --version```. At the time of writing this apt installs version 8.5.0.
+4. Install Wine/Wine32 from apt 
    Note: this will install version 9.0 (or 6.0.3 depending on your setup) from apt. if you have a newer version of WINE installed you will need to uninstall it (see the FAQ for more info). You cannot use yabridge with any version newer than 9.20.<br>
     ```
-   sudo apt install -y wine
-   sudo apt autoremove
+   # 1. Enable 32-bit architecture
+   echo "Enabling 32-bit architecture..."
    sudo dpkg --add-architecture i386
-   sudo apt-get update
-   sudo apt autoremove
-   sudo apt-get install -y wine32:i386
+   
+   # 2. Identify the Base Distribution
+   # We check /etc/os-release for the ID or ID_LIKE fields
+   if grep -qi "ubuntu" /etc/os-release; then
+       BASE_DISTRO="ubuntu"
+       # For Ubuntu derivatives, we need the underlying Ubuntu codename (e.g., 'noble' or 'jammy')
+       CODENAME=$(. /etc/os-release; echo $UBUNTU_CODENAME)
+       # Fallback if UBUNTU_CODENAME is empty (some distros don't set it)
+       [[ -z "$CODENAME" ]] && CODENAME=$(lsb_release -cs)
+   elif grep -qi "debian" /etc/os-release; then
+       BASE_DISTRO="debian"
+       CODENAME=$(lsb_release -cs)
+   else
+       echo "Error: This system does not appear to be based on Debian or Ubuntu."
+       exit 1
+   fi
+   
+   echo "Detected Base: $BASE_DISTRO"
+   echo "Detected Codename: $CODENAME"
+   
+   # 3. Setup WineHQ Keyring
+   sudo mkdir -pm 755 /etc/apt/keyrings
+   sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+   
+   # 4. Add Repository based on the detected Base
+   sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/$BASE_DISTRO/dists/$CODENAME/winehq-$CODENAME.sources
+   
+   # 5. Update and Install
+   sudo apt update
+   
+   # Installing 9.21 specifically across all necessary components
+   echo "Installing Wine 9.21 for $CODENAME..."
+   sudo apt install --install-recommends \
+       winehq-devel=9.21~$CODENAME-1 \
+       wine-devel=9.21~$CODENAME-1 \
+       wine-devel-amd64=9.21~$CODENAME-1 \
+       wine-devel-i386=9.21~$CODENAME-1
    ```
-6. Verify WINE was installed by running ```wine --version```
-7. Install Microsoft Fonts (and refresh your font cache) with the following code:<br>
+5. Verify WINE was installed by running ```wine --version```
+6. Install Microsoft Fonts (and refresh your font cache) with the following code:<br>
     ```
     sudo apt-get install -y ttf-mscorefonts-installer
     fc-cache -f -v
     ```
-8. Install all versions of Pipewire with the following command: ```sudo apt-get install -y pipewire pipewire-jack pipewire-alsa pipewire-pulse```
-9. Reboot your system.
-10. Download and configure yabridge with the following commands:<br>
+7. Install all versions of Pipewire with the following command: ```sudo apt-get install -y pipewire pipewire-jack pipewire-alsa pipewire-pulse```
+8. Reboot your system.
+9. Download and configure yabridge with the following commands:<br>
    ```
    wget -qO- https://api.github.com/repos/robbert-vdh/yabridge/releases/latest | grep "yabridge.*tar.gz" | cut -d : -f 2,3 | tr -d \" | xargs wget
 
@@ -117,8 +142,8 @@ If you do not have anything installed from the requirements list below are the s
    $HOME/.local/share/yabridge/yabridgectl sync
    $HOME/.local/share/yabridge/yabridgectl status
    ```
-11. Verify yabridge was installed by running ```yabridgectl --version```.
-12. Download the most recent release: https://github.com/Heroin-Bob/AudioTools-for-Linux/releases<br>
+10. Verify yabridge was installed by running ```yabridgectl --version```.
+11. Download the most recent release: https://github.com/Heroin-Bob/AudioTools-for-Linux/releases<br>
     Note: If you want to build the app yourself you can download all the project files then run the <b>Run this to build.sh</b> file and it will build the app for you. You can find the final app in the directory you built the file from by drilling down into <b>bin/Release/net8.0/linux-x64/publish</b>. You do not need any of the other files besides the AudioTools exe file. It is fully self-contained. Though if you are not on a fork of Ubuntu you will need to modify the commands for your system.
 
 At this point your setup is finished and you can now install and use Windows plugins and keep up with them via the AudioTools GUI.
